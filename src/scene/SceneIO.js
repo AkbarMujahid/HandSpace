@@ -1,0 +1,3 @@
+function colorOf(o,fallback=0xffffff){let c=fallback;o?.traverse?.(x=>{if(x.isMesh&&x.material?.color)c=x.material.color.getHex()});return c}
+export function serialize(objects,settings={}){return JSON.stringify({version:"3.2.0",settings,objects:objects.map(o=>({id:o.userData.id,kind:o.userData.kind,color:colorOf(o),position:o.position.toArray(),rotation:o.rotation.toArray(),scale:o.scale.toArray(),material:o.userData.materialSettings||{}}))},null,2)}
+export function parse(data){const x=typeof data==="string"?JSON.parse(data):data;if(!x||!Array.isArray(x.objects))throw new Error("Invalid HandSpace scene file.");return{settings:x.settings||{},objects:x.objects.filter(o=>["ico","box","torus","tetra","octa"].includes(o.kind))}}

@@ -1,0 +1,2 @@
+export class SelectionManager{constructor(){this.set=new Set()}
+add(o){this.set.add(o);o.userData.selected=true;this.ring(o,.6)}remove(o){this.set.delete(o);o.userData.selected=false;this.ring(o,0)}toggle(o){this.set.has(o)?this.remove(o):this.add(o)}clear(){[...this.set].forEach(o=>this.remove(o))}has(o){return this.set.has(o)}objects(){return[...this.set]}count(){return this.set.size}ring(o,v){o.traverse(c=>{if(c.userData?.ring)c.material.opacity=v})}}

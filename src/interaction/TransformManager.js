@@ -1,0 +1,5 @@
+import*as THREE from"three";
+export class TransformManager{constructor(){this.d=.01;this.a=0;this.center=new THREE.Vector3();this.items=[]}
+begin(objs,a,b){this.d=Math.max(.01,Math.hypot(a[8].x-b[8].x,a[8].y-b[8].y));this.a=Math.atan2(a[8].y-b[8].y,a[8].x-b[8].x);this.center.set(0,0,0);objs.forEach(o=>this.center.add(o.position));if(objs.length)this.center.multiplyScalar(1/objs.length);this.items=objs.map(o=>({o,pos:o.position.clone(),scale:o.scale.clone(),quat:o.quaternion.clone()}))}
+update(objs,a,b){if(!objs.length)return;const d=Math.max(.01,Math.hypot(a[8].x-b[8].x,a[8].y-b[8].y)),ang=Math.atan2(a[8].y-b[8].y,a[8].x-b[8].x),s=THREE.MathUtils.clamp(d/this.d,.72,1.42);let da=ang-this.a;while(da>Math.PI)da-=Math.PI*2;while(da<-Math.PI)da+=Math.PI*2;const q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,0,1),-da);this.items.forEach(x=>{if(!objs.includes(x.o))return;x.o.position.copy(this.center).add(x.pos.clone().sub(this.center).multiplyScalar(s).applyQuaternion(q));x.o.scale.copy(x.scale).multiplyScalar(s);x.o.quaternion.copy(x.quat).premultiply(q)})}
+end(){this.items=[]}}
